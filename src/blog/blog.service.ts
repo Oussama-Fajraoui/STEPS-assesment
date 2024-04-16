@@ -15,4 +15,11 @@ export class BlogService {
   async findAll(): Promise<Blog[]> {
     return this.blogModel.find().exec();
   }
+  async update(id: string, blogData: Blog): Promise<Blog> {
+    return this.blogModel.findByIdAndUpdate(id, blogData, { new: true }).exec();
+  }
+
+  async delete(id: string): Promise<any> {
+    return this.blogModel.findByIdAndRemove(id).exec();
+  }
 }
