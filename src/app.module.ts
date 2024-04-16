@@ -4,8 +4,10 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BlogModule } from './blog/blog.module';
 
+console.log('MongoDB URI:', process.env.MONGODB_URI);
+
 @Module({
-  imports: [MongooseModule.forRoot(process.env.MONGODB_URI), BlogModule],
+  imports: [MongooseModule.forRoot("mongodb+srv://oussamagf:24082007g@cluster0.is9uh6v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"), BlogModule],
   controllers: [AppController],
   providers: [AppService],
 })
