@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Blog } from './blog.schema';
+import { UpdateBlogDto } from './dto/update-blog.dto'; 
 
 @Injectable()
 export class BlogService {
@@ -15,11 +16,20 @@ export class BlogService {
   async findAll(): Promise<Blog[]> {
     return this.blogModel.find().exec();
   }
-  async update(id: string, blogData: Blog): Promise<Blog> {
-    return this.blogModel.findByIdAndUpdate(id, blogData, { new: true }).exec();
+
+  async update(id: string, blogData: UpdateBlogDto): Promise<Blog> {
+    const updatedBlog = await this.blogModel.findByIdAndUpdate(id, blogData, { new: true }).exec();
+    if (!updatedBlog) {
+      throw new Error('Blog not found');
+    }
+    return updatedBlog;
   }
 
   async delete(id: string): Promise<any> {
-    return this.blogModel.findByIdAndRemove(id).exec();
+    const deletedBlog = await this.blogModel.findByIdAndDelete(id).exec();
+    if (!deletedBlog) {
+      throw new Error('Blog not found');
+    }
+    return deletedBlog;
   }
 }

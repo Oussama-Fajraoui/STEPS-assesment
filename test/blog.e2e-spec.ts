@@ -5,6 +5,7 @@ import { AppModule } from '../src/app.module';
 
 describe('BlogController (e2e)', () => {
   let app: INestApplication;
+  let authToken: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -13,6 +14,7 @@ describe('BlogController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+    authToken = 'tezgzehgzerhezh';
   });
 
   it('/blogs (POST)', async () => {
@@ -24,20 +26,26 @@ describe('BlogController (e2e)', () => {
 
     return request(app.getHttpServer())
       .post('/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .send(blog)
       .expect(HttpStatus.CREATED)
-      .expect({
-        ...blog,
-        upvotes: 0,
-        downvotes: 0,
-        _id: expect.any(String),
-        __v: expect.any(Number),
+      .expect((res) => {
+        expect(res.body).toMatchObject({
+          title: blog.title,
+          content: blog.content,
+          author: blog.author,
+          upvotes: 0,
+          downvotes: 0
+        });
+        expect(res.body._id).toBeDefined();
+        expect(res.body.__v).toBeDefined();
       });
   });
 
   it('/blogs (GET)', async () => {
     return request(app.getHttpServer())
       .get('/blogs')
+      .set('Authorization', `Bearer ${authToken}`)
       .expect(HttpStatus.OK)
       .expect((res) => {
         expect(Array.isArray(res.body)).toBe(true);

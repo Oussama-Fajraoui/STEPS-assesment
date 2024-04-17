@@ -3,8 +3,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
-console.log('Test VAR:', process.env.TEST_VAR);
-
 dotenv.config();
 
 async function bootstrap() {
