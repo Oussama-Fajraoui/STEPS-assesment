@@ -19,6 +19,11 @@ export class BlogController {
   async findAll(): Promise<Blog[]> {
     return this.blogService.findAll();
   }
+  
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<Blog> {
+      return this.blogService.findOne(id);
+  }
 
   @Put(':id')
   async updateBlog(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto): Promise<Blog> {

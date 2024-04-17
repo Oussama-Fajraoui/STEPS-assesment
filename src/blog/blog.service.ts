@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Blog } from './blog.schema';
-import { UpdateBlogDto } from './dto/update-blog.dto'; 
+import { UpdateBlogDto } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -17,8 +17,18 @@ export class BlogService {
     return this.blogModel.find().exec();
   }
 
+  async findOne(id: string): Promise<Blog> {
+    const blog = await this.blogModel.findById(id).exec();
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+    return blog;
+  }
+
   async update(id: string, blogData: UpdateBlogDto): Promise<Blog> {
-    const updatedBlog = await this.blogModel.findByIdAndUpdate(id, blogData, { new: true }).exec();
+    const updatedBlog = await this.blogModel
+      .findByIdAndUpdate(id, blogData, { new: true })
+      .exec();
     if (!updatedBlog) {
       throw new Error('Blog not found');
     }
